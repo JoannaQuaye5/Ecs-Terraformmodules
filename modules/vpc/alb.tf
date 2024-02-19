@@ -8,7 +8,7 @@ resource "aws_alb" "ecs_alb" {
 
  subnets = [aws_subnet.public_subnet_az1.id, aws_subnet.public_subnet_az2.id]
 
- enable_http2 = true
+ enable_http2 = true-
  idle_timeout = var.idle_timeout
 
  enable_cross_zone_load_balancing = true
