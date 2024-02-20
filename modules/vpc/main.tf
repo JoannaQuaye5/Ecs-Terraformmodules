@@ -35,9 +35,10 @@ resource "aws_subnet" "public_subnet_az1" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "public subnet az1"
+    Name        = "${var.project_name}-public-subnet-az1$" 
   }
 }
+
 
 
 # Public subnet & avaiability zones
@@ -48,22 +49,25 @@ resource "aws_subnet" "public_subnet_az2" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "public subnet az2"
+    Name        = "${var.project_name}-public-subnet-az2$" 
   }
 }
 
 
+
+
 # Private subnet & avaiability zones
-resource "aws_subnet" "private_subnet_az2" {
+resource "aws_subnet" "private_subnet_az1" {
   vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = var.private_subnet_az2_cidr
+  cidr_block              = var.private_subnet_az1_cidr
   availability_zone       = data.aws_availability_zones.available_zones.names[1]
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "private subnet az2"
+    Name        = "${var.project_name}-public-subnet-az1$" 
   }
 }
+
 
 
 # Routing tables to route traffic for Public Subnet
@@ -77,7 +81,7 @@ resource "aws_route_table" "public_subnet_az1" {
 
 
 # Routing tables to route traffic for Private Subnet
-resource "aws_route_table" "private_subnet_az2" {
+resource "aws_route_table" "private_subnet_az1" {
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name        = "private subnet"
@@ -99,9 +103,9 @@ resource "aws_route_table_association" "public_subnet_az1" {
   route_table_id = aws_route_table.public_subnet_az1.id
 }
 
-resource "aws_route_table_association" "private_subnet_az2" {
-  subnet_id      = aws_subnet.private_subnet_az2.id
-  route_table_id = aws_route_table.private_subnet_az2.id
+resource "aws_route_table_association" "private_subnet_az1" {
+  subnet_id      = aws_subnet.private_subnet_az1.id
+  route_table_id = aws_route_table.private_subnet_az1.id
 }
 
 
@@ -114,13 +118,13 @@ resource "aws_eip" "Jo_IP" {
 #create NAT Gateway
 resource "aws_nat_gateway" "nat_gateway" {
 allocation_id = aws_eip.Jo_IP.id
-subnet_id =  aws_subnet.private_subnet_az2.id
+subnet_id =  aws_subnet.public_subnet_az1.id
 }
 
 
 # NAT Associate with Priv route
 resource "aws_route" "private_route" {
-route_table_id = aws_route_table.private_subnet_az2.id
+route_table_id = aws_route_table.private_subnet_az1.id
 gateway_id     = aws_nat_gateway.nat_gateway.id
 destination_cidr_block = "0.0.0.0/0"
 }

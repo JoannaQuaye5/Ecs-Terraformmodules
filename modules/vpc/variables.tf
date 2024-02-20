@@ -5,7 +5,7 @@ variable "vpc_cidr" {}
 variable "instance_tenancy" {}
 variable "public_subnet_az1_cidr" {}
 variable "public_subnet_az2_cidr" {}
-variable "private_subnet_az2_cidr" {}
+variable "private_subnet_az1_cidr" {}
 variable "engine" {}
 variable "instance_class" {}
 variable "db_name" {}
